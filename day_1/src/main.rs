@@ -2,6 +2,8 @@ use std::env;
 use std::fs::File;
 use std::io::{self, prelude::*, BufReader};
 
+use std::collections::BinaryHeap;
+
 fn main() -> io::Result<()> {
     let args: Vec<String> = env::args().collect();
     let filename = &args[1];
@@ -10,13 +12,23 @@ fn main() -> io::Result<()> {
     let reader = BufReader::new(file);
 
     let mut temp_sum = 0;
-    let mut max_sum = 0;
+    let mut heap = BinaryHeap::new();
+
+    println!("Heap: {:?}", heap);
 
     for line in reader.lines() {
         let val = line.unwrap();
         if val == "" {
-            if temp_sum > max_sum {
-                max_sum = temp_sum;
+            // end of elf's calorie counts, determine if should keep
+            let min_heap_val = match heap.peek() {
+                Some(val) => -val,
+                None => std::i32::MIN
+            };
+            if heap.len() < 3  {
+                heap.push(-temp_sum);
+            } else if temp_sum > min_heap_val{
+                heap.pop();
+                heap.push(-temp_sum);
             }
             temp_sum = 0;
         } else {
@@ -25,7 +37,8 @@ fn main() -> io::Result<()> {
         }
     }
 
-    println!("max sum: {}", max_sum);
+    println!("Heap: {:?}", heap);
+    println!("sum: {:?}", -1 * heap.iter().sum::<i32>());
 
     Ok(())
 }
