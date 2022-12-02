@@ -13,12 +13,9 @@ enum Move {
 
 fn move_from_str(input: &str) -> Move {
     match input {
-        "A" => Move::Rock,
-        "B" => Move::Paper,
-        "C" => Move::Scissors,
-        "X" => Move::Rock,
-        "Y" => Move::Paper,
-        "Z" => Move::Scissors,
+        "A" | "X" => Move::Rock,
+        "B" | "Y" => Move::Paper,
+        "C" | "Z" => Move::Scissors,
         _   => Move::None
     }
 }
@@ -33,26 +30,12 @@ fn value_of_move(mv: &Move) -> i32 {
 }
 
 fn value_of_match(opp_mv: &Move, my_mov: &Move) -> i32 {
-    match my_mov {
-        Move::None => 0,
-        Move::Rock => match opp_mv {
-            Move::Rock => 3,
-            Move::Paper => 0,
-            Move::Scissors => 6,
-            Move::None => 0
-        },
-        Move::Paper => match opp_mv {
-            Move::Rock => 6,
-            Move::Paper => 3,
-            Move::Scissors => 0,
-            Move::None => 0
-        },
-        Move::Scissors => match opp_mv {
-            Move::Rock => 0,
-            Move::Paper => 6,
-            Move::Scissors => 3,
-            Move::None => 0
-        }
+    match (opp_mv, my_mov) {
+        // ties
+        (mv1, mv2) if mv1 == mv2 => 3,
+        // wins
+        (Move::Rock, Move::Paper) | (Move::Paper, Move::Scissors) | (Move::Scissors, Move:: Rock) => 6,
+        _ => 0
     }
 }
 
