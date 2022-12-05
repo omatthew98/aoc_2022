@@ -40,7 +40,12 @@ fn perform_move(stacks: &mut Vec<LinkedList<char>>, from_ind: usize, to_ind: usi
     let from_stack = stacks.get_mut(from_ind - 1).unwrap();
     let to_move: Vec<char> = (0..num_moved).map(|_| from_stack.pop_front().unwrap()).collect();
     let to_stack = stacks.get_mut(to_ind - 1).unwrap();
-    to_move.iter().for_each(|c| to_stack.push_front(*c));
+
+    // pt 1, insert in order (this mimics crate by crate move)
+    // to_move.iter().for_each(|c| to_stack.push_front(*c));
+
+    // pt 2, insert in reverse order (this mimics block of crates move)
+    to_move.iter().rev().for_each(|c| to_stack.push_front(*c));
 }
 
 fn main() -> io::Result<()> {
